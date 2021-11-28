@@ -1,0 +1,523 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Java and OpenJDK in Corporate Environments</title>
+
+    <meta name="description" content="Java and OpenJDK in Corporate Environments" />
+    <meta name="author" content="Volker H. Simonis" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
+
+    <link rel="stylesheet" href="reveal.js/css/reveal.css" />
+    <link rel="stylesheet" href="reveal.js/css/theme/jet2015.css" id="theme" />
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="reveal.js/lib/css/monokai_sublime.css" />
+
+  <style type="text/css">
+.scrollable {
+    bottom: 0px;
+    overflow-y: auto  !important;
+    overflow-x: hidden !important;
+}
+
+.reveal .big {
+    font-size: .7em;
+    line-height: 1.4em;
+}
+
+.reveal pre.console {
+    background-color: black;
+    color: #00ff00;
+}
+
+.reveal pre.noshadow {
+    border-radius: uset;
+    box-shadow: unset;
+}
+
+.reveal pre code {
+    max-height: 98%;
+}
+.reveal p>code, .reveal li>code, .reveal a>code {
+    font-size-adjust: .5;
+}
+
+.reveal section img {
+    margin: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+.reveal .slides section .fragment.console_2, .reveal .slides section .fragment.console_3 {
+    opacity: 1;
+    visibility: visible;
+}
+.reveal .slides section .fragment.console_2.visible {
+    color: #ffffff;
+}
+.reveal .slides section .fragment.console_3.visible {
+    color: #AE81FF;
+}
+.reveal ol, .reveal dl, .reveal ul {
+    line-height: 1.5;
+}
+.reveal ul {
+    list-style-type: square;
+}
+.reveal ul ul {
+    list-style-type: disc;
+}
+  </style>
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="reveal.js/lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!--
+      Issue #1105: Keyboard shortcut to skip forward/back over fragments #1173
+      https://github.com/hakimel/reveal.js/pull/1173
+    -->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+
+        <section>
+	  <img class="plain" data-src="openjdk_images/wiki_Java-Logo_my.svg" style="width:35%; display:inline;" alt="Java logo"/>
+          <h1 style="display:inline; vertical-align:35px">&nbsp;&nbsp;and&nbsp;&nbsp;</h1>
+	  <img class="plain" data-src="openjdk_images/wiki_OpenJDK_logo_my.svg" style="width:35%; display:inline;" alt="OpenJDK logo"/>
+          <h1>in Corporate Environments</h1>
+          <p>
+            <small>Volker Simonis, SAP / <a href="mailto:volker.simonis@gmail.com">volker.simonis@gmail.com</a></small>
+          </p>
+        </section>
+
+<!---
+Java versions:
+
+$ /cygdrive/c/Software/Java/jdk1.8.0_74/bin/java -version
+java version "1.8.0_74"
+Java(TM) SE Runtime Environment (build 1.8.0_74-b02)
+Java HotSpot(TM) 64-Bit Server VM (build 25.74-b02, mixed mode)
+
+$ /cygdrive/c/Software/Java/sapjvm_8/bin/java -version
+java version "1.8.0_66"
+Java(TM) SE Runtime Environment (build 8.1.1541)
+SAP Java Server VM (build 8.1.1541 25.51-b15, Oct  6 2015 16:55:17 - cons - optU - windows amd64
+- 6 - bas2:252872 (mixed mode))
+
+$ /cygdrive/c/output/OpenJDK/output-jdk9-dev-dbg/images/jdk/bin/java -version
+openjdk version "9-internal"
+OpenJDK Runtime Environment (slowdebug build 9-internal+0-2016-08-16-105653.D046063.jdk9-dev)
+OpenJDK 64-Bit Server VM (slowdebug build 9-internal+0-2016-08-16-105653.D046063.jdk9-dev, mixed
+mode)
+
+$ /cygdrive/c/output/OpenJDK/output-jdk9-dev-dbg/images/jdk/bin/java -version
+openjdk version "9-internal"
+OpenJDK Runtime Environment (slowdebug build 9-internal+0-2016-08-16-105653.D046063.jdk9-dev)
+OpenJDK 64-Bit Server VM (slowdebug build 9-internal+0-2016-08-16-105653.D046063.jdk9-dev, mixed
+mode)
+
+bash-4.2$ /sapmnt/depot/tools/gen/hpia64/licenseware/jse/1.8.0/bin/java -version
+java version "1.8.0.04-hp-ux"
+Java(TM) SE Runtime Environment (build 1.8.0.04-hp-ux-b2)
+
+simonis@lu0482:~$ /sapmnt/depot/tools/gen/linuxx86_64/licenseware/jse/1.8.0/bin/java -version
+java version "1.8.0"
+Java(TM) SE Runtime Environment (build pxa6480sr2-20151023_01(SR2))
+IBM J9 VM (build 2.8, JRE 1.8.0 Linux amd64-64 Compressed References 20151019_272764 (JIT enabled, AOT enabled)
+J9VM - R28_Java8_SR2_20151019_2144_B272764
+JIT  - tr.r14.java_20151006_102517.04
+GC   - R28_Java8_SR2_20151019_2144_B272764_CMPRSS
+J9CL - 20151019_272764)
+JCL - 20151022_01 based on Oracle jdk8u65-b17
+s
+
+simonis@lu0482:~$ /etc/alternatives/java -version
+openjdk version "1.8.0_91"
+OpenJDK Runtime Environment (build 1.8.0_91-8u91-b14-3ubuntu1~16.04.1-b14)
+OpenJDK 64-Bit Server VM (build 25.91-b14, mixed mode)
+
+-->
+
+        <section>
+          <h2>
+            Disclaimer
+          </h2>
+          <ul>
+            <li>I am not a lawyer!</li>
+            <li>I do not provide legal advice!</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>The OpenJDK Project</h2>
+
+          <p>
+            <a href="http://openjdk.java.net">http://openjdk.java.net/</a>
+          </p>
+
+          <ul>
+            <li>Open Source implementation of Java SE</li>
+            <li>Reference implementation for Java SE 7, 8, 9, ..</li>
+            <li>Licensed under <b>GPLv2</b> (with Classpath exception)</li>
+            <li>Collaboration space for different implementers:
+              <ul>
+                <li>RedHat, SAP, IBM, Google, Intel, Twitter, Azul</li>
+              </ul>
+            </li>
+            <li>Playground for Java SE related projects:
+              <ul>
+                <li>Coin, InvokeDynamic, Lambda, Nashorn, ...</li>
+                <li>Jigsaw, Graal, Panama, Value Types, ...</li>
+              </ul>
+            </li>
+            <li><em>Does not provide binaries - just source code!</em></li>
+          </ul>
+
+        </section>
+
+        <section>
+          <h2>
+            The OpenJDK License
+          </h2>
+
+          <ul>
+            <li><a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GNU General Public License, version 2</a></li>
+              <ul>
+                <li>HotSpot files (i.e. everything under <code>hotspot/</code> except JNI headers)</li>
+              </ul>
+            <li><a href="http://openjdk.java.net/legal/gplv2+ce.html">GNU General Public License, version 2, with the Classpath Exception</a></li>
+              <ul>
+                <li>Class Library (i.e. everything under <code>jdk/</code>)</li>
+              </ul>
+          </ul>
+        </section>
+
+        <section>
+          <h2>OpenJDK Distributions/Binaries</h2>
+
+          <ul>
+            <li>Every Linux distribution comes with its own OpenJDK packages:</li>
+            <ul>
+              <li><a href="http://developers.redhat.com/products/openjdk/overview/">RedHat</a>/<a href="https://fedoraproject.org/wiki/Java">Fedora</a>:
+                based on the <a href="http://icedtea.classpath.org/wiki/Main_Page">IcedTea project</a></li>
+              <ul>
+                <li>Also supports "exotic" platforms like arm32/ppc32/s390/mips using the Zero port </li>
+                <li>Maintains its own patch queue</li>
+              </ul>
+              <li><a href="http://sources.debian.net/src/openjdk-8/">Debian</a>/<a href="https://code.launchpad.net/~openjdk/openjdk/openjdk8">Ubuntu</a>
+              (maintains own <a href="http://sources.debian.net/src/openjdk-8/8u102-b14.1-2/debian/patches/">patch queue)</a></li>
+            </ul>
+            <li><a href="https://www.azul.com/products/zulu">Azul Zulu</a>:</li>
+            <ul>
+              <li>OpenJDK binaries for <a href="http://www.azul.com/downloads/zulu/">Linux/Windows/Mac</a>
+                and <a href="https://www.azul.com/products/zulu-embedded/">embedded platforms</a></li>
+              <li>Integrated into <a href="http://www.azul.com/products/zulu/installing-and-running-zulu-on-microsoft-azure/">Microsoft Azure</a></li>
+            </ul>
+            <li><a href="https://aws.amazon.com/amazon-linux-ami/">AWS</a> and
+              <a href="https://hub.docker.com/_/openjdk">Docker</a> <!-- https://github.com/docker-library/openjdk --> (may use distribution specific packages)</li>
+            <li><a href="https://java.net/projects/adoptopenjdk/pages/AdoptOpenJDK">Adopt OpenJDK</a>
+              has a <a href="https://adopt-openjdk.ci.cloudbees.com/view/OpenJDK/">continuous build server</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>"<em>Closed</em>" OpenJDK Distribuitions</h2>
+
+          <ul>
+            <li>Google internally uses a custom OpenJDK build</li>
+            <ul>
+              <li>Contributions to the OpenJDK (<a href="http://openjdk.java.net/jeps/8130200">Parallelize the CMS full GC phase</a>, ppc64le, jsr-166)</li>
+            </ul>
+            <li>Twitter internally uses a custom OpenJDK build</li>
+            <ul>
+              <li>Contributions to the OpenJDK (mostly GC fixes)</li>
+            </ul>
+            <li><a href="http://jokerconf.com/en/#java_on_elbrus">OpenJDK port</a> for
+              <a href="https://en.wikipedia.org/wiki/Elbrus_2000">Elbrus (russian VLIW CPU)</a><!-- https://www.youtube.com/watch?v=4SrlBr9JqUU --></li>
+            <li><a href="https://en.wikipedia.org/wiki/Loongson">Loongson</a>/<a href="https://en.wikipedia.org/wiki/MIPS_instruction_set#MIPS32.2FMIPS64">Mips64</a>:
+              has recently published a <a href="http://hg.loongnix.org/">jdk8 repository</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Distribuitions using the OpenJDK class library</h2>
+
+          <ul>
+            <li>Possible because it is licensed under GPLv2 plus Classpath exception.</li>
+            <li><a href="https://en.wikipedia.org/wiki/IKVM.NET">IKVM.NET</a>: Java implementation for Mono/.NET</li>
+            <li><a href="https://en.wikipedia.org/wiki/JamVM">JamVM</a>: a small, interpreter-only Java VM</li>
+            <ul>
+              <li>Supported as alternative JDK on many Linux distros (Debian, Ubuntu, Fedora)</li>
+            </ul>
+            <li><a href="https://projects.eclipse.org/projects/technology.omr">Eclipse OMR</a>: open source version of IBM's J9</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>The Oracle JRE/JDK</h2>
+
+          <ul>
+            <li>Oracle's Java SE implementation</li>
+            <li>Based on OpenJDK sources</li>
+            <li>Plus Oracle specific/proprietary extensions and addons</li>
+            <ul>
+              <li>Different font renderer (T2K vs. FreeType)</li>
+              <li>FlightRecorder &amp; MissionControl</li>
+              <li>Browser plugin (now deprecated)</li>
+              <li>JavaFX</li>
+            </ul>
+            <li>Licensed under the Oracle Binary Code License Agreement for Java SE</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>
+            Oracle Java SE License
+          </h2>
+
+          <ul>
+            <li><a href="http://www.oracle.com/technetwork/java/javase/terms/license/index.html">Oracle Binary Code License Agreement for Java SE</a></li>
+              <ul>
+                <li>Contains "Field of use restriction"</li>
+                <li>Only for "General Purpose Desktop Computers and Servers"</li>
+                <li>Doesn't cover industrial control systems, mobile telephones and handheld devices, ..</li>
+                <li>Doesn't cover <a href="http://www.oracle.com/technetwork/java/javase/terms/products/index.html">"Commercial Features"</a> (e.g. Flight Recorder, Mission Control) in production</li>
+              </ul>
+          </ul>
+        </section>
+
+        <section>
+          <h2><a href="https://en.wikipedia.org/wiki/List_of_Java_virtual_machines">Other Java implementations</a></h2>
+
+          <div style="width: 100%">
+            <div style="float: left; width: 50%">
+
+              <p><span style="text-decoration: underline;">Proprietary:</span>
+                <ul style="vertical-align: top;">
+                  <li>IBM J9</li>
+                  <li>SAP JVM</li>
+                  <li>HP JDK</li>
+                  <li>Azul Zing</li>
+                  <li>Excelsior JET</li>
+                  <li>aicas JamaicaVM</li>
+                  <li>...</li>
+                </ul>
+              </p>
+
+            </div>
+            <div style="float: right; width: 50%">
+
+              <p><span style="text-decoration: underline;">Free:</span>
+                <ul style="vertical-align: top;">
+                  <li>Apache Harmony</li>
+                  <li>GNU gcj</li>
+                  <li>Jikes RVM</li>
+                  <li>...</li>
+                </ul>
+              </p>
+            </div>
+
+            <br style="clear: both;"/>
+          </div>
+
+        </section>
+
+        <section>
+          <h2>OpenJDK and the Java&trade;</h2>
+
+          <ul>
+            <li>You are not allowed to call it Java&trade; (or Java&trade; compatible) because:
+              <ul>
+                <li>"Java" is a registered trademark</li>
+                <li>You don't get access to the Technology Compatibility Kit (<b>TCK</b>)</li>
+              </ul>
+            </li>
+
+            <li>Accessing the <a href="http://en.wikipedia.org/wiki/Technology_Compatibility_Kit">TCK</a>
+              requires the signing of the<br/><a href="http://openjdk.java.net/legal/octla-java-se-8.pdf">
+                OpenJDK Community TCK License Agreement</a> (<b>OCTLA</b>)
+              <!-- OCTLA 6: http://openjdk.java.net/legal/openjdk-tck-license.pdf
+                   OCTLA 7: http://openjdk.java.net/legal/OpenJDK-TCK_SE7_27Dec2011.pdf-->
+              <ul>
+                <li>Only for OpenJDK or "substantially derived" projects under an "open source" license</li>
+                <li>OCTLA forbids disclosing TCK information to non-OCTLA licensees</li>
+              </ul>
+            </li>
+            <li>OCTLA is no trademark license!</li>
+
+            <li>"OpenJDK" can be used according to the
+              "<a href="http://openjdk.java.net/legal/openjdk-trademark-notice.html">OpenJDK
+                Trademark Notice</a>"</li>
+          </ul>
+
+        </section>
+
+        <section>
+          <h2>
+            The <a href="http://www.oracle.com/technetwork/oca-405177.pdf">Oracle Contribution Agreement</a> (<b>OCA</b>)
+          </h2>
+
+          <ul>
+            <li>Copyright and patent sharing agreement with regard to your contribution
+              <ul>
+                <li>Simple dual licensing model</li>
+              </ul>
+            </li>
+            <li>Both, you and Oracle, can treat your contribution as if they were the sole owners</li>
+            <li>Oracle guarantees to always publish any contribution under a suitable<br/>
+              <a href="http://www.fsf.org">Free Software Foundation</a> (FSF) or <a href="http://www.opensource.org">Open Source Initiative</a>
+              (OSI) approved license.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>
+            The Dual Licensing Model
+          </h2>
+
+          <img class="plain" data-src="openjdk_images/Dual_Licensing.png" alt="Dual Licensing Model"/>
+        </section>
+
+        <section>
+          <h2><a href="http://openjdk.java.net/jeps/0">The Java Enhancement Process (<b>JEP</b>)</a></h2>
+
+          <ul>
+            <li>Collect, review, sort, and record proposals for enhancements to the JDK</li>
+            <li><a href="http://openjdk.java.net/jeps/1">JEP 1: JDK Enhancement-Proposal &amp; Roadmap Process</a> defines the process</li>
+            <li>Simpler than a <a href="https://www.jcp.org">Java Community Process</a> (<b>JCP</b>) <a href="https://www.jcp.org/en/jsr/overview">Java Specification Request</a> (<b>JSR</b>)
+              <ul>
+                <li>Specification changes still require a JSR</li>
+              </ul>
+            </li>
+            <li>The JEP process is still dominated by Oracle:
+              <ul>
+                <li>requires endorsement and funding by <a href="http://openjdk.java.net/bylaws#group-lead">Group Leads</a></li>
+                <li>The <a href="http://openjdk.java.net/bylaws#openjdk-lead">OpenJDK Lead</a>
+                  (appointed by Oracle) ultimately<br/> decides which JEPs to include into the Roadmap.</li>
+              </ul>
+            </li>
+            <li>Still attractive for &ldquo;implementation enhancements&rdquo; (i.e. new Ports, GCs, JITs, ..)</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2><a href="http://openjdk.java.net/bylaws">OpenJDK <b>Bylaws</b></a></h2>
+
+          <ul>
+            <li>The "constitution" of the OpenJDK project</li>
+            <li>Define OpenJDK <a href="http://openjdk.java.net/bylaws#_4"><b>Groups</b></a>,
+              <a href="http://openjdk.java.net/bylaws#_6"><b>Projects</b></a> and
+              <a href="http://openjdk.java.net/bylaws#_2"><b>Roles</b></a></li>
+            <li>Define the <a href="http://openjdk.java.net/bylaws#_9"><b>Governing Board</b></a>
+              which manages<br/> the structure and operation of the OpenJDK community
+              <ul>
+                <li>Chair (appointed by Oracle): <b>Georges Saab</b></li>
+                <li>Vice-Chair (appointed by IBM): <b>John Duimovich</b></li>
+                <li>OpenJDK Lead (appointed by Oracle): <b>Mark Reinhold</b></li>
+                <li>At-Large Member (elected by OpenJDK Members): <b>Doug Lea</b>, SUNY Oswego</li>
+                <li>At-Large Member (elected by OpenJDK Members): <b>Andrew Haley</b>, RedHat</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>OpenJDK Organisation</h2>
+
+          <ul>
+            <li><a href="http://openjdk.java.net/bylaws#participant"><b>Participants</b></a>: 
+              individuals who subscribed to an OpenJDK mailing list</li>
+            <li><a href="http://openjdk.java.net/bylaws#contributor"><b>Contributors</b></a>: Participants who signed the OCA</li>
+            <li><a href="http://openjdk.java.net/bylaws#_4"><b>Groups</b></a> (currently 20)
+              <ul>
+                <li>consist of <a href="http://openjdk.java.net/bylaws#group-member"><b>Group Members</b></a> 
+                  and a <a href="http://openjdk.java.net/bylaws#group-lead"><b>Group Lead</b></a>
+                  <ul>
+                    <li>Group Members elect new Group Members from Contributors</li>
+                  </ul>
+                </li>
+                <li>sponsor Projects</li>
+              </ul>
+            </li>
+            <li><a href="http://openjdk.java.net/bylaws#_6"><b>Projects</b></a> (currently 54)
+              <ul>
+                <li>produce artifacts (code, documentation, whole JDK releases)</li>
+                <li>have code repositories, mailing lists and possibly web content</li>
+                <li>consist of <a href="http://openjdk.java.net/bylaws#author"><b>Authors</b></a>,
+                  <a href="http://openjdk.java.net/bylaws#committer"><b>Committers</b></a>,
+                  <a href="http://openjdk.java.net/bylaws#reviewer"><b>Reviewers</b></a>
+                  and a <a href="http://openjdk.java.net/bylaws#project-lead"><b>Project Lead</b></a>
+                  <ul>
+                    <li>Project Leads appoint Authors from Contributors</li>
+                    <li>Committers elect new Committers from Authors</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+
+        <section data-background="openjdk_images/Flammarion.jpg"
+                 data-background-size="60%">
+          &nbsp;
+        </section>
+
+      </div>
+    </div>
+
+    <script src="reveal.js/lib/js/head.min.js"></script>
+    <script src="reveal.js/js/reveal.js"></script>
+
+    <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        width: 1366,
+        height: 768,
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'none', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>
